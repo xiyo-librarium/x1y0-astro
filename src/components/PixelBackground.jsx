@@ -22,6 +22,13 @@ function deriveWord(pathname) {
   return ['x', '1', 'y', '0']
 }
 
+// 6:00〜18:00 を昼、それ以外を夜とする
+function isDayNow() {
+  if (typeof window === 'undefined') return false
+  const h = new Date().getHours()
+  return h >= 6 && h < 18
+}
+
 export default function PixelBackground() {
   const canvasRef = useRef(null)
   const stateRef = useRef({ scroll: 0, docHeight: 3000 })
@@ -29,6 +36,7 @@ export default function PixelBackground() {
   const previousGridRef = useRef(null)
   const animRef = useRef(null)
   const transitionRef = useRef({ active: false, startTime: 0 })
+  const daytimeRef = useRef(isDayNow())
 
   const [pathname, setPathname] = useState(() =>
     typeof window === 'undefined' ? '/' : window.location.pathname
@@ -39,6 +47,15 @@ export default function PixelBackground() {
     const update = () => setPathname(window.location.pathname)
     document.addEventListener('astro:after-swap', update)
     return () => document.removeEventListener('astro:after-swap', update)
+  }, [])
+
+  // 1 分ごとに昼/夜判定を再評価（境界 6:00 / 18:00 をまたいだら反映）
+  useEffect(() => {
+    daytimeRef.current = isDayNow()
+    const id = setInterval(() => {
+      daytimeRef.current = isDayNow()
+    }, 60_000)
+    return () => clearInterval(id)
   }, [])
 
   const word = useMemo(() => deriveWord(pathname), [pathname])
@@ -197,8 +214,13 @@ export default function PixelBackground() {
       const { scroll, docHeight } = stateRef.current
       const tLinear = Math.min(scroll / docHeight, 1)
       const t = tLinear <= 0 ? 0 : tLinear >= 1 ? 1 : easeNormal(tLinear)
-      const tRounded = Math.round(t * 1000) / 1000
-      document.documentElement.style.setProperty('--lit-ratio', tRounded)
+
+      // 昼は上=アイボリー / 下=ダーク → ivoryRatio = 1 - t
+      // 夜は上=ダーク / 下=アイボリー → ivoryRatio = t
+      const day = daytimeRef.current
+      const ivoryRatio = day ? 1 - t : t
+      const ivoryRounded = Math.round(ivoryRatio * 1000) / 1000
+      document.documentElement.style.setProperty('--lit-ratio', ivoryRounded)
 
       const transition = transitionRef.current
       let scrambling = false
@@ -222,16 +244,19 @@ export default function PixelBackground() {
       for (let i = 0; i < cells.length; i++) {
         const cell = cells[i]
 
-        let isTop = cell.isTopText
-        let isBottom = cell.isBottomText
+        // 昼/夜でテキストセルの役割をスワップ
+        // night: topText=lit / bottomText=dark
+        // day:   topText=dark / bottomText=lit
+        let alwaysLit = day ? cell.isBottomText : cell.isTopText
+        let alwaysDark = day ? cell.isTopText : cell.isBottomText
 
         if (scrambling && cell.hasDiff && tt < cell.settleTime) {
-          isTop = Math.random() < 0.5
-          isBottom = false
+          alwaysLit = Math.random() < 0.5
+          alwaysDark = false
         }
 
-        if (isBottom) continue
-        if (isTop || t >= cell.threshold) {
+        if (alwaysDark) continue
+        if (alwaysLit || ivoryRatio >= cell.threshold) {
           ctx.fillRect(cell.x, cell.y, cellSize, cellSize)
         }
       }
