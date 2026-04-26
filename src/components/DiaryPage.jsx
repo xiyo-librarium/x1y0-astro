@@ -64,19 +64,21 @@ function CollapsedContent({ entry, hovered, onTagClick }) {
       </h2>
       {entry.body && (
         <>
-          <p ref={bodyRef} style={{
-            fontSize: '0.78rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.65,
-            whiteSpace: 'pre-line',
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            marginBottom: overflows ? '0.4rem' : '0',
-          }}>
-            {entry.body}
-          </p>
+          <div
+            ref={bodyRef}
+            className="diary-body"
+            style={{
+              fontSize: '0.78rem',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.65,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              marginBottom: overflows ? '0.4rem' : '0',
+            }}
+            dangerouslySetInnerHTML={{ __html: entry.bodyHtml || '' }}
+          />
           {overflows && (
             <span className="mono" style={{
               fontSize: '0.6rem',
@@ -144,14 +146,15 @@ function ExpandedContent({ entry, onTagClick }) {
         {entry.title}
       </h2>
       {entry.body && (
-        <p style={{
-          fontSize: '0.78rem',
-          color: 'var(--text-secondary)',
-          lineHeight: 1.65,
-          whiteSpace: 'pre-line',
-        }}>
-          {entry.body}
-        </p>
+        <div
+          className="diary-body"
+          style={{
+            fontSize: '0.78rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.65,
+          }}
+          dangerouslySetInnerHTML={{ __html: entry.bodyHtml || '' }}
+        />
       )}
       {entry.tags?.length > 0 && (
         <div

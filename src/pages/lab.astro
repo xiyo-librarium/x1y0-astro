@@ -15,6 +15,7 @@ const diary = (await getCollection('diary'))
 <Base
   title="Lab — x1y0.net"
   description="xiyo が作ったプロダクト一覧。"
+  ogImage="/og/lab.png"
 >
   <LabPage projects={projects} diary={diary} client:only="react" />
 </Base>

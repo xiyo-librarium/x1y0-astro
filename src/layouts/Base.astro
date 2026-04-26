@@ -9,12 +9,17 @@ import Navigation from '../components/Navigation.jsx'
 interface Props {
   title?: string
   description?: string
+  ogImage?: string
 }
 
 const {
   title = 'x1y0.net',
   description = 'x1y0.net — まだ形になっていないアイデアを、プロダクトとして世に送り出す。',
+  ogImage = '/og/home.png',
 } = Astro.props
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://x1y0.net').toString()
+const ogUrl = new URL(ogImage, Astro.site ?? 'https://x1y0.net').toString()
 ---
 
 <!doctype html>
@@ -23,11 +28,15 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <link rel="canonical" href={canonical} />
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://x1y0.net" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogUrl} />
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>"

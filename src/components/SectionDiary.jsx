@@ -52,18 +52,19 @@ function DiaryRow({ entry }) {
             {entry.date}
           </span>
         </div>
-        <p style={{
-          fontSize: '0.8rem',
-          color: 'var(--text-secondary)',
-          lineHeight: 1.7,
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          whiteSpace: 'pre-line',
-        }}>
-          {entry.body}
-        </p>
+        <div
+          className="diary-body"
+          style={{
+            fontSize: '0.8rem',
+            color: 'var(--text-secondary)',
+            lineHeight: 1.7,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+          dangerouslySetInnerHTML={{ __html: entry.bodyHtml || '' }}
+        />
       </a>
     </div>
   )

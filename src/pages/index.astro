@@ -6,6 +6,7 @@ import SectionDiary from '../components/SectionDiary.jsx'
 import { getCollection } from 'astro:content'
 import { profile } from '../data/profile'
 import { getRecentUpdates } from '../lib/recent'
+import { renderMarkdown } from '../lib/markdown'
 
 const recentUpdates = await getRecentUpdates()
 
@@ -14,7 +15,12 @@ const projects = (await getCollection('lab'))
   .sort((a, b) => b.date.localeCompare(a.date))
 
 const diary = (await getCollection('diary'))
-  .map(e => ({ ...e.data, body: e.body ?? '' }))
+  .map(e => ({
+    ...e.data,
+    slug: e.id,
+    body: e.body ?? '',
+    bodyHtml: renderMarkdown(e.body ?? ''),
+  }))
   .sort((a, b) => b.date.localeCompare(a.date))
 ---
 

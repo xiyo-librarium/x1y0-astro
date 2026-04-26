@@ -14,7 +14,7 @@ export async function GET(context) {
       title: entry.data.title,
       description: entry.body?.slice(0, 200) ?? '',
       pubDate: new Date(entry.data.date.replaceAll('.', '-')),
-      link: `/diary?open=${encodeURIComponent(entry.data.date)}`,
+      link: `/diary/${entry.id}/`,
       categories: entry.data.tags ?? [],
     })),
     customData: '<language>ja</language>',

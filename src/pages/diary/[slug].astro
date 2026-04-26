@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro'
+import GlassPlate from '../../components/GlassPlate.jsx'
+import { getCollection } from 'astro:content'
+import { renderMarkdown } from '../../lib/markdown'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('diary')
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }))
+}
+
+const { entry } = Astro.props
+const bodyHtml = renderMarkdown(entry.body ?? '')
+const description = (entry.body ?? '').replace(/\n/g, ' ').slice(0, 140)
+---
+
+<Base
+  title={`${entry.data.title} — Diary — x1y0.net`}
+  description={description}
+  ogImage={`/og/diary/${entry.id}.png`}
+>
+  <main style="padding: var(--page-pad-top) 1.5rem var(--page-pad-bottom); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;">
+    <article class="plate-width" style="width: 100%;">
+      <GlassPlate
+        client:load
+        style={{
+          padding: 'clamp(1.6rem, 4vw, 2.6rem)',
+        }}
+      >
+        <p class="mono" style="font-size: 0.6rem; color: var(--mocha); letter-spacing: 0.15em; margin-bottom: 0.8rem;">
+          {entry.data.date}
+        </p>
+        <h1 style="font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.4rem; color: var(--text-primary);">
+          {entry.data.title}
+        </h1>
+
+        <div
+          class="diary-body"
+          style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.85; margin-bottom: 1.8rem;"
+          set:html={bodyHtml}
+        />
+
+        {entry.data.tags?.length > 0 && (
+          <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; padding-top: 1.2rem; border-top: 1px solid rgba(164, 119, 100, 0.10);">
+            {entry.data.tags.map((tag) => (
+              <a
+                href={`/diary?tag=${encodeURIComponent(tag)}`}
+                data-hover
+                class="tag-pill"
+                style="font-size: 0.6rem; padding: 0.2rem 0.6rem; border-radius: 999px; text-decoration: none;"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
+
+        <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+          <a href="/diary" data-hover class="text-link">
+            ← Diary 一覧へ
+          </a>
+        </div>
+      </GlassPlate>
+    </article>
+  </main>
+</Base>

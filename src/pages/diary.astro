@@ -2,15 +2,22 @@
 import Base from '../layouts/Base.astro'
 import DiaryPage from '../components/DiaryPage.jsx'
 import { getCollection } from 'astro:content'
+import { renderMarkdown } from '../lib/markdown'
 
 const diary = (await getCollection('diary'))
-  .map(e => ({ ...e.data, body: e.body ?? '' }))
+  .map(e => ({
+    ...e.data,
+    slug: e.id,
+    body: e.body ?? '',
+    bodyHtml: renderMarkdown(e.body ?? ''),
+  }))
   .sort((a, b) => b.date.localeCompare(a.date))
 ---
 
 <Base
   title="Diary — x1y0.net"
   description="xiyo の日記。日々考えたこと・作ったもの・メモ。"
+  ogImage="/og/diary.png"
 >
   <DiaryPage diary={diary} client:only="react" />
 </Base>
