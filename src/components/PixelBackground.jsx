@@ -49,12 +49,16 @@ export default function PixelBackground() {
     return () => document.removeEventListener('astro:after-swap', update)
   }, [])
 
-  // 1 分ごとに昼/夜判定を再評価（境界 6:00 / 18:00 をまたいだら反映）
+  // 1 分ごとに昼/夜判定を再評価（境界 6:00 / 18:00 をまたいだら反映）。
+  // <html> に .day-mode を付け外しして、CSS 側のアクセント変数を切り替える。
   useEffect(() => {
-    daytimeRef.current = isDayNow()
-    const id = setInterval(() => {
-      daytimeRef.current = isDayNow()
-    }, 60_000)
+    const apply = () => {
+      const day = isDayNow()
+      daytimeRef.current = day
+      document.documentElement.classList.toggle('day-mode', day)
+    }
+    apply()
+    const id = setInterval(apply, 60_000)
     return () => clearInterval(id)
   }, [])
 

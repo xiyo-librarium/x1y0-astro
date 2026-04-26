@@ -15,6 +15,7 @@
 
   /* Accent — saturated warm neon (still on-brand) */
   --mocha: #D17C4A;             /* boosted from #A47764 */
+  --mocha-rgb: 209, 124, 74;    /* mocha as rgb tuple for rgba(...) usage */
   --accent-1: #D17C4A;          /* boosted Mocha Mousse */
   --accent-2: #7AC58A;           /* clearer sage */
   --accent-3: #E37880;           /* clearer rose */
@@ -55,6 +56,15 @@
   --transition-fast: 0.2s var(--ease-out-expo);
   --transition-medium: 0.4s var(--ease-out-expo);
   --transition-slow: 0.8s var(--ease-out-expo);
+}
+
+/* 昼モード: PixelBackground が <html> に .day-mode を付ける（6:00〜18:00 ローカル）。
+   アクセントカラーが鮮やかな blue になる。 */
+.day-mode {
+  --mocha: #3b82f6;
+  --mocha-rgb: 59, 130, 246;
+  --accent-1: #3b82f6;
+  --accent-gradient: linear-gradient(135deg, #3b82f6, #6ea8fe, #93c5fd);
 }
 
 /* Reset */
@@ -181,7 +191,7 @@ img { max-width: 100%; display: block; }
 .diary-body a {
   color: var(--mocha);
   text-decoration: underline;
-  text-decoration-color: rgba(209, 124, 74, 0.4);
+  text-decoration-color: rgba(var(--mocha-rgb), 0.4);
 }
 .diary-body a:hover {
   text-decoration-color: var(--mocha);
