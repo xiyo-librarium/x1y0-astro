@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro'
 import GlassPlate from '../../components/GlassPlate.jsx'
 import { getCollection } from 'astro:content'
 import { renderMarkdown } from '../../lib/markdown'
+import { isRecent } from '../../lib/dates'
 
 export async function getStaticPaths() {
   const entries = await getCollection('diary')
@@ -15,6 +16,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 const bodyHtml = renderMarkdown(entry.body ?? '')
 const description = (entry.body ?? '').replace(/\n/g, ' ').slice(0, 140)
+const fresh = isRecent(entry.data.date)
 ---
 
 <Base
@@ -30,9 +32,12 @@ const description = (entry.body ?? '').replace(/\n/g, ' ').slice(0, 140)
           padding: 'clamp(1.6rem, 4vw, 2.6rem)',
         }}
       >
-        <p class="mono" style="font-size: 0.6rem; color: var(--mocha); letter-spacing: 0.15em; margin-bottom: 0.8rem;">
-          {entry.data.date}
-        </p>
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
+          <p class="mono" style="font-size: 0.6rem; color: var(--mocha); letter-spacing: 0.15em;">
+            {entry.data.date}
+          </p>
+          {fresh && <span class="new-badge">new</span>}
+        </div>
         <h1 style="font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 1.4rem; color: var(--text-primary);">
           {entry.data.title}
         </h1>

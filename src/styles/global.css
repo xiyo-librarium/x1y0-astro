@@ -28,6 +28,11 @@
   /* Plate background alpha — updated by ScrollColorProvider 0.55 → 0.94 */
   --plate-bg-alpha: 0.55;
 
+  /* External link / new-badge accent (blue). 別タブで開くリンクと
+     "今日/昨日" のエントリ印に使う。アクセントの mocha とは別軸。 */
+  --external: #4f7cff;
+  --external-rgb: 79, 124, 255;
+
   /* Page edge padding — top/bottom 共通。背景の x1y0/lab/diary テキスト用の余白 */
   --page-pad-top: clamp(8rem, 14vw, 12rem);
   --page-pad-bottom: clamp(8rem, 14vw, 12rem);
@@ -138,6 +143,27 @@ img { max-width: 100%; display: block; }
 }
 .text-link:hover { color: var(--mocha); }
 
+/* 別タブで開く外部リンクは blue 系で hover */
+.text-link[target="_blank"] {
+  border-bottom-color: rgba(var(--external-rgb), 0.18);
+}
+.text-link[target="_blank"]:hover { color: var(--external); }
+
+/* 「new」バッジ — 7 日以内のエントリに付く小さな blue ピル */
+.new-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.45rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--external);
+  color: var(--bg-primary);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 /* 暗いカプセルのタグピル */
 .tag-pill {
   font-family: 'JetBrains Mono', monospace;
@@ -189,6 +215,14 @@ img { max-width: 100%; display: block; }
 }
 .diary-body a:hover {
   text-decoration-color: var(--mocha);
+}
+/* 別タブで開く外部リンクは blue */
+.diary-body a[target="_blank"] {
+  color: var(--external);
+  text-decoration-color: rgba(var(--external-rgb), 0.4);
+}
+.diary-body a[target="_blank"]:hover {
+  text-decoration-color: var(--external);
 }
 .diary-body strong {
   color: var(--text-primary);

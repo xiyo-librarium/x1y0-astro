@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom'
 import FadeIn from './FadeIn'
 import GlassPlate from './GlassPlate'
 import { prefersReducedMotion } from '../lib/motion'
+import { isRecent } from '../lib/dates'
 
 const pillBase = {
   fontFamily: "'JetBrains Mono', monospace",
@@ -42,16 +43,25 @@ function CollapsedContent({ entry, hovered, onTagClick }) {
     setOverflows(el.scrollHeight - 1 > el.clientHeight)
   }, [entry.body])
 
+  const fresh = isRecent(entry.date)
+
   return (
     <>
-      <p className="mono" style={{
-        fontSize: '0.55rem',
-        color: 'var(--text-muted)',
-        letterSpacing: '0.1em',
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
         marginBottom: '0.4rem',
       }}>
-        {entry.date}
-      </p>
+        <p className="mono" style={{
+          fontSize: '0.55rem',
+          color: 'var(--text-muted)',
+          letterSpacing: '0.1em',
+        }}>
+          {entry.date}
+        </p>
+        {fresh && <span className="new-badge">new</span>}
+      </div>
       <h2 style={{
         fontSize: '0.95rem',
         fontWeight: 600,
@@ -126,16 +136,24 @@ function CollapsedContent({ entry, hovered, onTagClick }) {
 }
 
 function ExpandedContent({ entry, onTagClick }) {
+  const fresh = isRecent(entry.date)
   return (
     <>
-      <p className="mono" style={{
-        fontSize: '0.55rem',
-        color: 'var(--mocha)',
-        letterSpacing: '0.1em',
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
         marginBottom: '0.4rem',
       }}>
-        {entry.date}
-      </p>
+        <p className="mono" style={{
+          fontSize: '0.55rem',
+          color: 'var(--mocha)',
+          letterSpacing: '0.1em',
+        }}>
+          {entry.date}
+        </p>
+        {fresh && <span className="new-badge">new</span>}
+      </div>
       <h2 style={{
         fontSize: '0.95rem',
         fontWeight: 600,

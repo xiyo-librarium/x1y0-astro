@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import FadeIn from './FadeIn'
 import GlassPlate from './GlassPlate'
+import { isRecent } from '../lib/dates'
 
 function RecentItem({ item, onClick }) {
   const [hovered, setHovered] = useState(false)
+  const fresh = isRecent(item.date)
   return (
     <button
       data-hover
@@ -53,13 +55,20 @@ function RecentItem({ item, onClick }) {
           {item.label}
         </span>
       </div>
-      <span className="mono" style={{
-        fontSize: '0.55rem',
-        color: 'var(--text-muted)',
+      <span style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
         flexShrink: 0,
         marginLeft: '1rem',
       }}>
-        {item.date}
+        {fresh && <span className="new-badge">new</span>}
+        <span className="mono" style={{
+          fontSize: '0.55rem',
+          color: 'var(--text-muted)',
+        }}>
+          {item.date}
+        </span>
       </span>
     </button>
   )

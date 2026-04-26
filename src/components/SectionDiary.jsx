@@ -2,11 +2,13 @@ import { useState } from 'react'
 import FadeIn from './FadeIn'
 import GlassPlate from './GlassPlate'
 import SectionKicker from './SectionKicker'
+import { isRecent } from '../lib/dates'
 
 const MAX_PREVIEW = 3
 
 function DiaryRow({ entry }) {
   const [hovered, setHovered] = useState(false)
+  const fresh = isRecent(entry.date)
   return (
     <div
       onMouseEnter={() => setHovered(true)}
@@ -42,14 +44,21 @@ function DiaryRow({ entry }) {
           }}>
             {entry.title}
           </h3>
-          <span className="mono" style={{
-            fontSize: '0.55rem',
-            color: 'var(--text-muted)',
-            letterSpacing: '0.04em',
+          <span style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
             flexShrink: 0,
             marginLeft: '1rem',
           }}>
-            {entry.date}
+            {fresh && <span className="new-badge">new</span>}
+            <span className="mono" style={{
+              fontSize: '0.55rem',
+              color: 'var(--text-muted)',
+              letterSpacing: '0.04em',
+            }}>
+              {entry.date}
+            </span>
           </span>
         </div>
         <div
