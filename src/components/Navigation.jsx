@@ -48,7 +48,7 @@ export default function Navigation() {
 
   return (
     <>
-      <nav className="top-nav" style={{
+      <nav className={`top-nav ${isHome ? 'top-nav-home' : ''}`} style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -122,7 +122,10 @@ export default function Navigation() {
 
       <style>{`
         @media (max-width: 768px) {
-          .top-nav { display: none !important; }
+          /* スマホ: ホームではバー全部隠す（戻る先がない）。
+             Lab/Diary 等の非ホームでは Back だけ出したいのでバーは残す。
+             nav-items 自体は inline style で isHome=false の時 display:none。 */
+          .top-nav.top-nav-home { display: none !important; }
         }
       `}</style>
     </>
