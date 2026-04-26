@@ -42,24 +42,25 @@ export default function PixelBackground() {
     typeof window === 'undefined' ? '/' : window.location.pathname
   )
 
-  // Astro の view-transitions navigation 対応
-  useEffect(() => {
-    const update = () => setPathname(window.location.pathname)
-    document.addEventListener('astro:after-swap', update)
-    return () => document.removeEventListener('astro:after-swap', update)
-  }, [])
-
-  // 1 分ごとに昼/夜判定を再評価（境界 6:00 / 18:00 をまたいだら反映）。
-  // <html> に .day-mode を付け外しして、CSS 側のアクセント変数を切り替える。
+  // Astro の view-transitions ナビゲーション + 1 分間隔で:
+  // - 現在 pathname を state に同期（PixelBackground が word を切り替えるため）
+  // - 昼/夜を判定して <html> に .day-mode を付け外し
+  //   (Astro の swap は <html> の class を新ページ側で上書きするので
+  //    after-swap でも再 apply しないと day-mode が消える)
   useEffect(() => {
     const apply = () => {
+      setPathname(window.location.pathname)
       const day = isDayNow()
       daytimeRef.current = day
       document.documentElement.classList.toggle('day-mode', day)
     }
     apply()
+    document.addEventListener('astro:after-swap', apply)
     const id = setInterval(apply, 60_000)
-    return () => clearInterval(id)
+    return () => {
+      document.removeEventListener('astro:after-swap', apply)
+      clearInterval(id)
+    }
   }, [])
 
   const word = useMemo(() => deriveWord(pathname), [pathname])
