@@ -58,14 +58,8 @@
   --transition-slow: 0.8s var(--ease-out-expo);
 }
 
-/* 昼モード: PixelBackground が <html> に .day-mode を付ける（6:00〜18:00 ローカル）。
-   アクセントカラーが鮮やかな blue になる。 */
-.day-mode {
-  --mocha: #4f7cff;
-  --mocha-rgb: 79, 124, 255;
-  --accent-1: #4f7cff;
-  --accent-gradient: linear-gradient(135deg, #4f7cff, #7c97ff, #b3c4ff);
-}
+/* 昼モード用にとっておく blue。今は背景グラデのフリップだけで色は不変。
+   .day-mode クラスは PixelBackground が <html> に付け外ししてる（将来何か仕込めるよう残す）。 */
 
 /* Reset */
 *, *::before, *::after {
