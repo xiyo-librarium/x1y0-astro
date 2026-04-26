@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro'
+import LabPage from '../components/LabPage.jsx'
+import { getCollection } from 'astro:content'
+
+const projects = (await getCollection('lab'))
+  .map(p => ({ slug: p.id, ...p.data }))
+  .sort((a, b) => b.date.localeCompare(a.date))
+
+const diary = (await getCollection('diary'))
+  .map(e => ({ ...e.data, body: e.body ?? '' }))
+  .sort((a, b) => b.date.localeCompare(a.date))
+---
+
+<Base
+  title="Lab — x1y0.net"
+  description="xiyo が作ったプロダクト一覧。"
+>
+  <LabPage projects={projects} diary={diary} client:only="react" />
+</Base>

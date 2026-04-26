@@ -1,17 +1,27 @@
 ---
+import Base from '../layouts/Base.astro'
+import SectionTop from '../components/SectionTop.jsx'
+import SectionLab from '../components/SectionLab.jsx'
+import SectionDiary from '../components/SectionDiary.jsx'
+import { getCollection } from 'astro:content'
+import { profile } from '../data/profile'
+import { getRecentUpdates } from '../lib/recent'
 
+const recentUpdates = await getRecentUpdates()
+
+const projects = (await getCollection('lab'))
+  .map(p => ({ slug: p.id, ...p.data }))
+  .sort((a, b) => b.date.localeCompare(a.date))
+
+const diary = (await getCollection('diary'))
+  .map(e => ({ ...e.data, body: e.body ?? '' }))
+  .sort((a, b) => b.date.localeCompare(a.date))
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="x1y0.net">
+  <main>
+    <SectionTop profile={profile} recentUpdates={recentUpdates} client:only="react" />
+    <SectionLab projects={projects} client:only="react" />
+    <SectionDiary diary={diary} client:only="react" />
+  </main>
+</Base>
