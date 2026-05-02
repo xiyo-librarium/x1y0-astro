@@ -9,6 +9,7 @@ function RecentItem({ item, onClick }) {
   return (
     <button
       data-hover
+      className="recent-item"
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -16,6 +17,7 @@ function RecentItem({ item, onClick }) {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        gap: '1rem',
         background: 'none',
         border: 'none',
         padding: '0.5rem 0',
@@ -25,11 +27,12 @@ function RecentItem({ item, onClick }) {
         width: '100%',
       }}
     >
-      <div style={{
+      <div className="recent-item-label" style={{
         display: 'flex',
         alignItems: 'center',
         gap: '0.6rem',
         minWidth: 0,
+        flex: 1,
         transform: hovered ? 'translateX(0.5rem)' : 'translateX(0)',
         transition: 'transform 0.2s ease',
       }}>
@@ -44,23 +47,24 @@ function RecentItem({ item, onClick }) {
         }}>
           {item.section}
         </span>
-        <span style={{
+        <span className="recent-item-title" style={{
           fontSize: '0.8rem',
           color: hovered ? 'var(--mocha)' : 'var(--text-primary)',
           transition: 'color 0.2s ease',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
+          minWidth: 0,
+          flex: 1,
         }}>
           {item.label}
         </span>
       </div>
-      <span style={{
+      <span className="recent-item-meta" style={{
         display: 'flex',
         alignItems: 'center',
         gap: '0.5rem',
         flexShrink: 0,
-        marginLeft: '1rem',
       }}>
         {fresh && <span className="new-badge">new</span>}
         <span className="mono" style={{
@@ -232,6 +236,22 @@ export default function SectionTop({ profile, recentUpdates }) {
             width: 100%;
             height: 1px;
             margin: 1.5rem 0;
+          }
+        }
+        @media (max-width: 480px) {
+          .recent-item {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.25rem !important;
+          }
+          .recent-item .recent-item-title {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            line-height: 1.45;
+          }
+          .recent-item .recent-item-meta {
+            justify-content: flex-end;
           }
         }
       `}</style>
